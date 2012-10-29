@@ -23,7 +23,7 @@ install_requires = [
     'formencode',
     'html2text',
     'js.bootstrap>=2.1.5',
-    'js.deform>=0.9.5-3',
+    'js.deform>=0.9.5-4',
     'js.deform_bootstrap>=0.2.4-1',
     'js.jquery',
     'js.jquery_form',
@@ -69,6 +69,12 @@ development_requires = [
     'minify',
     ]
 
+docs_require = [
+    'Sphinx',
+    'docutils',
+    'repoze.sphinx.autointerface',
+    ]
+
 if sys.version_info[:3] < (2, 7, 0):
     install_requires.append('ordereddict')
 
@@ -110,6 +116,7 @@ setup(name='Kotti',
       extras_require={
           'testing': tests_require,
           'development': development_requires,
+          'docs': docs_require,
           },
       message_extractors={'kotti': [
             ('**.py', 'lingua_python', None),
