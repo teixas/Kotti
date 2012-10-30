@@ -60,7 +60,6 @@ tests_require = [
     'pytest-cov',
     'pytest-pep8',
     'pytest-xdist',
-    'selenium',
     'wsgi_intercept',
     'zope.testbrowser',
     ]
