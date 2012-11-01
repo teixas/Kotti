@@ -5,16 +5,14 @@ from pyramid.httpexceptions import HTTPFound
 
 from kotti.interfaces import IContent
 from kotti.resources import get_root
-from kotti.testing import DummyRequest
-from kotti.testing import UnitTestBase
 from kotti.views.edit.default_views import DefaultViewSelection
 
 
-class TestDefaultViewSelection(UnitTestBase):
+class TestDefaultViewSelection:
 
-    def test__is_valid_view(self):
+    def test__is_valid_view(self, config, dummy_request):
 
-        self.config.add_view(
+        config.add_view(
             context=IContent,
             name='folder_view',
             permission='view',
@@ -22,15 +20,14 @@ class TestDefaultViewSelection(UnitTestBase):
         )
 
         context = get_root()
-        request = DummyRequest()
 
-        view = DefaultViewSelection(context, request)
+        view = DefaultViewSelection(context, dummy_request)
 
         assert view._is_valid_view("folder_view") is True
         assert view._is_valid_view("foo") is False
 
-    def test_default_views(self):
-        self.config.add_view(
+    def test_default_views(self, config, dummy_request):
+        config.add_view(
             context=IContent,
             name='folder_view',
             permission='view',
@@ -38,9 +35,8 @@ class TestDefaultViewSelection(UnitTestBase):
             )
 
         context = get_root()
-        request = DummyRequest()
 
-        view = DefaultViewSelection(context, request)
+        view = DefaultViewSelection(context, dummy_request)
 
         sviews = view.default_view_selector()
 
@@ -57,32 +53,34 @@ class TestDefaultViewSelection(UnitTestBase):
         assert sviews['selectable_default_views'][1]['is_current'] is False
 
         # set the default view to folder_view view
-        request = DummyRequest(GET={'view_name': 'folder_view'})
-        view = DefaultViewSelection(context, request)
+        dummy_request.GET = {'view_name': 'folder_view'}
+        view = DefaultViewSelection(context, dummy_request)
 
         assert type(view.set_default_view()) == HTTPFound
         assert context.default_view == 'folder_view'
 
         # set back to default
-        request = DummyRequest(GET={'view_name': 'default'})
-        view = DefaultViewSelection(context, request)
+        dummy_request.GET = {'view_name': 'default'}
+        view = DefaultViewSelection(context, dummy_request)
 
         assert type(view.set_default_view()) == HTTPFound
         assert context.default_view is None
 
         # try to set non existing view
-        request = DummyRequest(GET={'view_name': 'nonexisting'})
-        view = DefaultViewSelection(context, request)
+        dummy_request.GET = {'view_name': 'nonexisting'}
+        view = DefaultViewSelection(context, dummy_request)
 
         assert type(view.set_default_view()) == HTTPFound
         assert context.default_view is None
 
-    def test_warning_for_non_registered_views(self):
+    def test_warning_for_non_registered_views(self, dummy_request):
 
         with warnings.catch_warnings(record=True) as w:
 
-            DefaultViewSelection(get_root(), DummyRequest()).default_view_selector()
+            DefaultViewSelection(
+                get_root(), dummy_request).default_view_selector()
 
             assert len(w) == 1
             assert issubclass(w[-1].category, UserWarning)
-            assert str(w[-1].message) == "No view called 'folder_view' is registered for <Document 1 at />"
+            assert str(w[-1].message) == \
+                "No view called 'folder_view' is registered for <Document 1 at />"

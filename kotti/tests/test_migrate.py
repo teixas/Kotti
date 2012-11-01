@@ -1,12 +1,10 @@
-from unittest import TestCase
-
 from alembic.migration import MigrationContext
 from mock import patch
 
 from kotti.testing import UnitTestBase
 
 
-class TestScriptDirectoryWithDefaultEnvPy(TestCase):
+class TestScriptDirectoryWithDefaultEnvPy:
     def make(self):
         from kotti.migrate import ScriptDirectoryWithDefaultEnvPy
         from kotti.migrate import KOTTI_SCRIPT_DIR

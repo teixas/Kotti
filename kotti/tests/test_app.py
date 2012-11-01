@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from unittest import TestCase
 import warnings
 
 from mock import patch
@@ -207,7 +206,7 @@ class TestApp:
         assert tuple(res)  # a version_num should exist
 
 
-class TestGetVersion(TestCase):
+class TestGetVersion:
     def test_it(self):
         from kotti import get_version
         assert isinstance(get_version(), str)
