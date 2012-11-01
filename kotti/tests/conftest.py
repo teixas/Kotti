@@ -61,8 +61,8 @@ def db_session(config, connection, request):
 @fixture
 def dummy_request(config):
     from kotti.testing import DummyRequest
-    config.manager.get()['request'] = request = DummyRequest()
-    return request
+    #config.manager.get()['request'] = request = DummyRequest()
+    return DummyRequest()
 
 
 @fixture
