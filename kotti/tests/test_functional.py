@@ -1,6 +1,5 @@
 from StringIO import StringIO
 from mock import patch
-from kotti.testing import FunctionalTestBase
 
 
 class TestLogin:
@@ -21,19 +20,19 @@ class TestForbidden:
         assert res.location.startswith('http://localhost/@@login?came_from=')
 
     def test_forbidden_redirect_when_authenticated(self, app):
-        with patch('kotti.views.login.authenticated_userid', return_value='foo'):
+        with patch('kotti.views.login.authenticated_userid',
+                   return_value='foo'):
             res = app.get('/@@edit', status=302)
         assert res.location == 'http://localhost/@@forbidden'
 
 
-class TestUploadFile(FunctionalTestBase):
+class TestUploadFile:
     def add_file(self, browser, contents='ABC'):
         file_ctrl = browser.getControl("File").mech_control
         file_ctrl.add_file(StringIO(contents), filename='my_image.gif')
         browser.getControl('save').click()
 
-    def get_browser(self):
-        browser = self.Browser()
+    def get_browser(self, browser):
         browser.open(self.BASE_URL + '/edit')
         browser.getControl("Username or email").value = 'admin'
         browser.getControl("Password").value = 'secret'
@@ -41,21 +40,21 @@ class TestUploadFile(FunctionalTestBase):
         browser.open(self.BASE_URL + '/@@add_file')
         return browser
 
-    def test_it(self):
-        browser = self.get_browser()
+    def test_it(self, browser):
+        browser = self.get_browser(browser)
         self.add_file(browser)
         assert "Successfully added item" in browser.contents
         return browser
 
-    def test_view_uploaded_file(self):
-        browser = self.get_browser()
+    def test_view_uploaded_file(self, browser):
+        browser = self.get_browser(browser)
         self.add_file(browser)
         browser.getLink("View").click()
         browser.getLink("Download file").click()
         assert browser.contents == 'ABC'
 
-    def test_tempstorage(self):
-        browser = self.get_browser()
+    def test_tempstorage(self, browser):
+        browser = self.get_browser(browser)
         self.add_file(browser)
         browser.getLink("Edit").click()
         browser.getControl("Title").value = ''  # the error

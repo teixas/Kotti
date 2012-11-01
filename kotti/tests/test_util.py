@@ -1,6 +1,5 @@
 from mock import Mock
 from mock import patch
-from kotti.testing import UnitTestBase
 
 
 class TestRequestCache(object):
@@ -68,10 +67,9 @@ class TestTitleToName:
         assert disambiguate_name(u'foo-3') == u'foo-4'
 
 
-class TestCommand(UnitTestBase):
+class TestCommand:
     def test_it(self):
         from kotti.util import command
-
         func = Mock()
         closer = Mock()
         with patch('kotti.util.docopt') as docopt:
