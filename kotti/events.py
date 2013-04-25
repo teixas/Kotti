@@ -185,7 +185,9 @@ def _before_insert(mapper, connection, target):
     :type target: Class as returned by ``declarative_base()``
     """
 
-    notify(ObjectInsert(target, get_current_request()))
+    request = get_current_request()
+    notify(ObjectInsert(target, request))
+    _set_owner(target, request)
 
 
 def _before_update(mapper, connection, target):
@@ -236,6 +238,13 @@ def _after_delete(mapper, connection, target):
     """
 
     notify(ObjectAfterDelete(target, get_current_request()))
+
+
+def _before_flush(session, flush_context, instances):
+    if hasattr(session, '_nodes_without_owner'):
+        for node, request in session._nodes_without_owner:
+            set_owner(ObjectEvent(node, request))
+        del session._nodes_without_owner
 
 
 def set_owner(event):
@@ -324,6 +333,13 @@ def reset_content_owner(event):
         content.owner = None
 
 
+def _set_owner(obj, request):
+    session = DBSession.object_session(obj)
+    nodes = getattr(session, '_nodes_without_owner', [])
+    nodes.append((obj, request))
+    session._nodes_without_owner = nodes
+
+
 class subscribe(object):
     """Function decorator to attach the decorated function as a handler for a
     Kotti event.  Example::
@@ -399,6 +415,7 @@ def wire_sqlalchemy():  # pragma: no cover
     sqlalchemy.event.listen(mapper, 'before_update', _before_update)
     sqlalchemy.event.listen(mapper, 'before_delete', _before_delete)
     sqlalchemy.event.listen(mapper, 'after_delete', _after_delete)
+    sqlalchemy.event.listen(DBSession, 'before_flush', _before_flush)
 
 
 def includeme(config):
@@ -414,8 +431,8 @@ def includeme(config):
     wire_sqlalchemy()
 
     # Set content owner on content creation
-    objectevent_listeners[
-        (ObjectInsert, Content)].append(set_owner)
+    #objectevent_listeners[
+    #    (ObjectInsert, Content)].append(set_owner)
 
     # Set content creation date on content creation
     objectevent_listeners[
