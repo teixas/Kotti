@@ -6,7 +6,9 @@ from pytest import fixture
 def settings():
     from kotti import _resolve_dotted
     from kotti import conf_defaults
+    from kotti.testing import testing_db_url
     settings = conf_defaults.copy()
+    settings['sqlalchemy.url'] = testing_db_url()
     settings['kotti.secret'] = 'secret'
     settings['kotti.secret2'] = 'secret2'
     settings['kotti.populators'] = 'kotti.testing._populator'
@@ -116,11 +118,12 @@ def browser(db_session, request):
         pytest marker (or `pytest.mark.user`) can be used to pre-authenticate
         the browser with the given login name: `@user('admin')`.
     """
-    from wsgi_intercept import add_wsgi_intercept, zope_testbrowser
+    from zope.testbrowser.wsgi import Browser
+    from kotti import main
     from kotti.testing import BASE_URL
     host, port = BASE_URL.split(':')[-2:]
-    add_wsgi_intercept(host[2:], int(port), setup_app)
-    browser = zope_testbrowser.WSGI_Browser(BASE_URL + '/')
+    app = main({}, **settings())
+    browser = Browser(BASE_URL + '/', wsgi_app=app)
     if 'user' in request.keywords:
         # set auth cookie directly on the browser instance...
         from pyramid.security import remember

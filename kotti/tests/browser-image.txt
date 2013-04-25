@@ -7,7 +7,7 @@ Setup and Login
   >>> tools = testing.setUpFunctional(**{
   ...     'pyramid.includes': 'kotti.views.slots.includeme_local_navigation',
   ...     })
-  >>> browser = tools['Browser']()
+  >>> browser = tools['browser']
   >>> ctrl = browser.getControl
 
   >>> browser.open(testing.BASE_URL + '/edit')
@@ -102,7 +102,7 @@ Default scale
 
   >>> browser.open(testing.BASE_URL + '/my-gallery/image-1/image')
   >>> browser.headers["content-type"]
-  'image/jpeg'
+  'image/jpeg; charset=latin1'
   >>> browser.headers["content-length"]
   '107341'
   >>> browser.headers["content-disposition"].lower()
@@ -112,7 +112,7 @@ Default scale, attachment
 
   >>> browser.open(testing.BASE_URL + '/my-gallery/image-1/image/download')
   >>> browser.headers["content-type"]
-  'image/jpeg'
+  'image/jpeg; charset=latin1'
   >>> browser.headers["content-length"]
   '107341'
   >>> browser.headers["content-disposition"].lower()
@@ -122,7 +122,7 @@ Span1
 
   >>> browser.open(testing.BASE_URL + '/my-gallery/image-1/image/span1')
   >>> browser.headers["content-type"]
-  'image/jpeg'
+  'image/jpeg; charset=latin1'
   >>> 1000 < int(browser.headers["content-length"]) < 2000
   True
   >>> browser.headers["content-disposition"].lower()
@@ -132,7 +132,7 @@ Span1, attachment
 
   >>> browser.open(testing.BASE_URL + '/my-gallery/image-1/image/span1/download')
   >>> browser.headers["content-type"]
-  'image/jpeg'
+  'image/jpeg; charset=latin1'
   >>> browser.headers["content-disposition"].lower()
   'attachment;filename="sendeschluss.jpg"'
 
@@ -140,7 +140,7 @@ Invalid predefined scale (should return original size)
 
   >>> browser.open(testing.BASE_URL + '/my-gallery/image-1/image/invalid_scale')
   >>> browser.headers["content-type"]
-  'image/jpeg'
+  'image/jpeg; charset=latin1'
   >>> browser.headers["content-length"]
   '107341'
   >>> browser.headers["content-disposition"].lower()
@@ -150,7 +150,7 @@ Invalid predefined scale (should return original size), attachment
 
   >>> browser.open(testing.BASE_URL + '/my-gallery/image-1/image/invalid_scale/download')
   >>> browser.headers["content-type"]
-  'image/jpeg'
+  'image/jpeg; charset=latin1'
   >>> browser.headers["content-length"]
   '107341'
   >>> browser.headers["content-disposition"].lower()

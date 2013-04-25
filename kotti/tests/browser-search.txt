@@ -6,7 +6,7 @@ Setup and Login
   >>> from kotti import testing
   >>> tools = testing.setUpFunctional(
   ...     **{})
-  >>> browser = tools['Browser']()
+  >>> browser = tools['browser']
   >>> ctrl = browser.getControl
 
   >>> browser.open(testing.BASE_URL + '/edit')
@@ -49,7 +49,7 @@ Search the documents
   >>> ctrl(name='search-term').value = u'Document 1'
   >>> ctrl(name='search-submit').click()
   >>> browser.url
-  'http://localhost:6543/@@search-results'
+  'http://localhost/@@search-results'
 
 
   >>> u'<dd>I am the first Document' in browser.contents

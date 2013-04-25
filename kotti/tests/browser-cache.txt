@@ -7,7 +7,7 @@ Setup
   >>> from kotti.resources import get_root
   >>> from kotti import testing
   >>> tools = testing.setUpFunctional()
-  >>> browser = tools['Browser']()
+  >>> browser = tools['browser']
   >>> root = get_root()
 
 Some convenience functions:

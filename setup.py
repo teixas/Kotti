@@ -61,7 +61,7 @@ tests_require = [
     'pytest-pep8!=1.0.3',
     'pytest-xdist',
     'wsgi_intercept',
-    'zope.testbrowser',
+    'zope.testbrowser==4.0.3dev',
     ]
 
 development_requires = [
@@ -102,6 +102,7 @@ setup(name='Kotti',
       install_requires=install_requires,
       tests_require=tests_require,
       dependency_links=[
+        'http://github.com/zopefoundation/zope.testbrowser/tarball/webtest#egg=zope.testbrowser-4.0.3dev'
       ],
       entry_points="""\
       [paste.app_factory]

@@ -12,7 +12,7 @@ Setup
 Get a handle for some useful objects:
 
    >>> tools = testing.setUpFunctional()
-   >>> browser = tools['Browser']()
+   >>> browser = tools['browser']
    >>> ctrl = browser.getControl
    >>> root = DBSession.query(Node).get(1)
    >>> mailer = testing.registerDummyMailer()
@@ -167,7 +167,7 @@ There's no Add link if nothing can be added:
   ...     Document.type_info.addable_to = ()
   ...     File.type_info.addable_to = ()
   ...     Image.type_info.addable_to = ()
-  ...     browser.reload()
+  ...     browser.open(testing.BASE_URL + '/second-child/grandchild-1/')
   ...     browser.getLink("Add")
   ... finally:
   ...     Document.type_info.addable_to = save_addable_document
@@ -186,7 +186,7 @@ Add a file
   >>> "Item was added" in browser.contents
   True
   >>> print browser.url
-  http://localhost:6543/tiny.txt/
+  http://localhost/tiny.txt/
 
 Add a file larger than maximum file size
 ----------------------------------------
@@ -196,7 +196,7 @@ Add a file larger than maximum file size
   >>> ctrl("Title").value = "Huge File"
   >>> ctrl("Description").value = "An huge file"
   >>> huge = '*' * (10 * 1024 * 1024 + 1)
-  >>> ctrl("File").add_file(StringIO(huge), 'text/plain', 'huge.txt')
+  >>> ctrl("File").add_file(StringIO(huge).read(), 'text/plain', 'huge.txt')
   >>> ctrl("save").click()
   >>> "There was a problem" in browser.contents
   True
@@ -345,7 +345,7 @@ You can't cut the root of a site:
 
   >>> browser.open(testing.BASE_URL + '/child-one')
   >>> browser.getLink('Cut')
-  <Link text='Cut' url='http://localhost:6543/child-one/@@cut'>
+  <Link text='Cut' url='http://localhost/child-one/@@cut'>
   >>> browser.open(testing.BASE_URL)
   >>> browser.getLink('Cut')
   Traceback (most recent call last):
@@ -536,10 +536,10 @@ Contents view change state actions
 
   >>> browser.getLink("Second Child").click()
   >>> browser.getLink("Contents").click()
-  >>> 'http://localhost:6543/second-child-1/third-child/@@workflow-change?new_state=public' in browser.contents
+  >>> 'http://localhost/second-child-1/third-child/@@workflow-change?new_state=public' in browser.contents
   True
   >>> browser.getLink("Make Public", index=2).click()
-  >>> 'http://localhost:6543/second-child-1/third-child/@@workflow-change?new_state=private' in browser.contents
+  >>> 'http://localhost/second-child-1/third-child/@@workflow-change?new_state=private' in browser.contents
   True
 
   >>> childs = ctrl(name='children')
@@ -569,26 +569,26 @@ Contents view change state actions
   >>> ctrl(name='change_state').click()
   >>> 'Your changes have been saved.' in browser.contents
   True
-  >>> 'http://localhost:6543/second-child-1/third-child/@@workflow-change?new_state=public' in browser.contents
+  >>> 'http://localhost/second-child-1/third-child/@@workflow-change?new_state=public' in browser.contents
   True
-  >>> 'http://localhost:6543/second-child-1/grandchild-2/@@workflow-change?new_state=public' in browser.contents
+  >>> 'http://localhost/second-child-1/grandchild-2/@@workflow-change?new_state=public' in browser.contents
   True
-  >>> 'http://localhost:6543/second-child-1/grandchild-3/@@workflow-change?new_state=public' in browser.contents
+  >>> 'http://localhost/second-child-1/grandchild-3/@@workflow-change?new_state=public' in browser.contents
   True
 
   >>> browser.getLink('My Third Child').click()
-  >>> 'http://localhost:6543/second-child-1/third-child/child-one/@@workflow-change?new_state=public' in browser.contents
+  >>> 'http://localhost/second-child-1/third-child/child-one/@@workflow-change?new_state=public' in browser.contents
   True
   >>> browser.open(testing.BASE_URL + '/second-child-1/third-child/child-one/@@workflow-change?new_state=public')
   >>> browser.open(testing.BASE_URL + '/second-child-1/third-child/@@contents')
-  >>> 'http://localhost:6543/second-child-1/third-child/child-one/@@workflow-change?new_state=private' in browser.contents
+  >>> 'http://localhost/second-child-1/third-child/child-one/@@workflow-change?new_state=private' in browser.contents
   True
 
   >>> browser.getLink('First Child', index=1).click()
   >>> browser.getLink('Document').click()
   >>> ctrl('Title').value = 'Sub child'
   >>> ctrl(name='save').click()
-  >>> 'http://localhost:6543/second-child-1/third-child/child-one/sub-child/@@workflow-change?new_state=public' in browser.contents
+  >>> 'http://localhost/second-child-1/third-child/child-one/sub-child/@@workflow-change?new_state=public' in browser.contents
   True
 
   >>> browser.getLink("Second Child").click()
@@ -601,10 +601,10 @@ Contents view change state actions
   >>> ctrl(name='change_state').click()
   >>> 'Your changes have been saved.' in browser.contents
   True
-  >>> 'http://localhost:6543/second-child-1/third-child/@@workflow-change?new_state=private' in browser.contents
+  >>> 'http://localhost/second-child-1/third-child/@@workflow-change?new_state=private' in browser.contents
   True
   >>> browser.open(testing.BASE_URL + '/second-child-1/third-child/child-one/sub-child/')
-  >>> 'http://localhost:6543/second-child-1/third-child/child-one/sub-child/@@workflow-change?new_state=private' in browser.contents
+  >>> 'http://localhost/second-child-1/third-child/child-one/sub-child/@@workflow-change?new_state=private' in browser.contents
   True
 
 
@@ -723,7 +723,7 @@ screen:
   >>> "No changes were made." in browser.contents
   True
   >>> browser.url
-  'http://localhost:6543/@@setup-users'
+  'http://localhost/@@setup-users'
 
 
 Back in user management we can see how Bob's inherited the Viewer role
@@ -763,7 +763,7 @@ set his own password:
   Hello, Bob Dabolina!
   You are joining Website des Kottbusser Tors.
   Click here to set your password and log in:
-  http://localhost:6543/@@set-password?token=...
+  http://localhost/@@set-password?token=...
 
 We'll use that link to set our password:
 

@@ -34,7 +34,7 @@ resetwarnings()
 user = mark.user
 
 
-BASE_URL = 'http://localhost:6543'
+BASE_URL = 'http://localhost'
 
 
 class Dummy(dict):
@@ -183,8 +183,8 @@ def _functional_includeme(config):
 
 def setUpFunctional(global_config=None, **settings):
     from kotti import main
-    import wsgi_intercept.zope_testbrowser
     from webtest import TestApp
+    from zope.testbrowser.wsgi import Browser
 
     tearDown()
 
@@ -198,15 +198,13 @@ def setUpFunctional(global_config=None, **settings):
         }
     _settings.update(settings)
 
-    host, port = BASE_URL.split(':')[-2:]
     app = main({}, **_settings)
-    wsgi_intercept.add_wsgi_intercept(host[2:], int(port), lambda: app)
-    Browser = wsgi_intercept.zope_testbrowser.WSGI_Browser
 
     return dict(
         Browser=Browser,
-        browser=Browser(),
+        browser=Browser(wsgi_app=app),
         test_app=TestApp(app),
+        wsgi_app=app,
         )
 
 

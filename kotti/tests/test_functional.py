@@ -31,8 +31,9 @@ class TestForbidden:
 class TestUploadFile:
 
     def add_file(self, browser, contents='ABC'):
-        file_ctrl = browser.getControl("File").mech_control
-        file_ctrl.add_file(StringIO(contents), filename='my_image.gif')
+        file_ctrl = browser.getControl("File")
+        file_ctrl.add_file(
+            StringIO(contents).read(), 'image/gif', 'my_image.gif')
         browser.getControl('save').click()
 
     @user('admin')
