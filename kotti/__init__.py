@@ -109,6 +109,8 @@ conf_defaults = {
     'kotti.register.group': '',
     'kotti.register.role': '',
     'pyramid_deform.template_search_path': 'kotti:templates/deform',
+    'kotti.sanitizer': True,
+    'kotti.sanitizer.fields': 'document.body',
     }
 
 conf_dotted = set([

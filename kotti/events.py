@@ -33,6 +33,7 @@ from kotti.resources import LocalGroup
 from kotti.resources import Node
 from kotti.resources import Tag
 from kotti.resources import TagsToContents
+from kotti.sanitizer import sanitize
 from kotti.security import get_principals
 from kotti.security import list_groups
 from kotti.security import list_groups_raw
@@ -242,7 +243,6 @@ def set_creation_date(event):
     :param event: event that trigerred this handler.
     :type event: :class:`ObjectInsert`
     """
-
     obj = event.object
     if obj.creation_date is None:
         obj.creation_date = obj.modification_date = datetime.now()
@@ -513,6 +513,12 @@ def includeme(config):
     # Set content modification date on content updates
     objectevent_listeners[
         (ObjectUpdate, Content)].append(set_modification_date)
+
+    # Run a sanitizer on content
+    objectevent_listeners[
+        (ObjectInsert, Content)].append(sanitize)
+    objectevent_listeners[
+        (ObjectUpdate, Content)].append(sanitize)
 
     # Delete orphaned tags after a tag association has ben deleted
     objectevent_listeners[

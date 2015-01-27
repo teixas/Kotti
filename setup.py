@@ -17,6 +17,7 @@ install_requires = [
     'Chameleon>=2.7.4',  # Fixes error when raising HTTPFound
     'Pillow',  # dependency of plone.scale
     'alembic',
+    'bleach',
     'colander>=0.9.3',
     'deform>=2.0a1',  # >=2.0a1 to support Bootstrap 2
     # 'deform_bootstrap>=0.1',  # checked_input widget
